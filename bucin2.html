@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>anjaymabar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin.min.js"></script>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      
+      body {
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffe6e9;
+        font-family: "Quicksand", sans-serif;
+        overflow: hidden;
+        touch-action: none;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+      
+      /* Question Page Styles */
+      .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: 0.2s;
+      }
+
+      .question-container {
+        display: block;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: 0.2s;
+      }
+      
+      .tenor-gif-embed {
+        height: 15rem;
+        pointer-events: none;
+        border-radius: 10px;
+        margin-bottom: 3rem;
+      }
+      
+      .question {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      
+      .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+      
+      .btn {
+        position: absolute;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-family: "Quicksand", sans-serif;
+        font-size: 18px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-color: #ff6b81;
+        color: white;
+        transform: scale(1.05);
+        box-shadow: 0px 4px 15px rgba(255, 107, 129, 0.5);
+      }
+      
+      .btn:hover {
+        background-color: #ffa4b1;
+        transform: scale(1.1);
+        box-shadow: 0px 6px 20px rgba(255, 107, 129, 0.7);
+        text-shadow: 1px 1px 5px rgba(255, 182, 193, 0.8);
+      }
+
+      .yes-btn {
+        right: 54%;
+      }
+      
+      .no-btn {
+        left: 54%;
+      }
+
+      .result-container {
+        display: none;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: 0.2s;
+        text-align: center;
+      }
+      
+      .gif-result {
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        max-width: 400px;
+      }
+      
+      .result-container h2 {
+        font-size: 3.2rem;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      
+      .play-game-btn {
+        position: relative;
+        border: none;
+        border-radius: 50px;
+        padding: 15px 40px;
+        font-family: "Quicksand", sans-serif;
+        font-size: 20px;
+        cursor: pointer;
+        background-color: #ff69b4;
+        color: white;
+        box-shadow: 0px 4px 15px rgba(255, 105, 180, 0.5);
+        transition: all 0.3s ease;
+      }
+      
+      .play-game-btn:hover {
+        background-color: #ff1493;
+        transform: scale(1.1);
+        box-shadow: 0px 6px 20px rgba(255, 20, 147, 0.7);
+      }
+
+      /* Heart loader */
+      .cssload-main {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .cssload-main * {
+        font-size: 62px;
+      }
+
+      .cssload-heart {
+        animation: cssload-heart 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+        position: relative;
+      }
+
+      .cssload-heartL {
+        width: 1em;
+        height: 1em;
+        border: 1px solid #ff0000;
+        background-color: #ff0000;
+        position: absolute;
+        display: block;
+        border-radius: 100%;
+        animation: cssload-heartL 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+        transform: translate(-28px, -27px);
+      }
+
+      .cssload-heartR {
+        width: 1em;
+        height: 1em;
+        border: 1px solid #ff0000;
+        background-color: #ff0000;
+        position: absolute;
+        display: block;
+        border-radius: 100%;
+        transform: translate(28px, -27px);
+        animation: cssload-heartR 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+      }
+
+      .cssload-square {
+        width: 1em;
+        height: 1em;
+        border: 1px solid #ff0000;
+        background-color: #ff0000;
+        position: relative;
+        display: block;
+        transform: scale(1) rotate(-45deg);
+        animation: cssload-square 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+      }
+
+      .cssload-shadow {
+        top: 97px;
+        left: 50%;
+        position: relative;
+        display: block;
+        width: 1em;
+        height: 0.24em;
+        background-color: rgb(215, 215, 215);
+        border: 1px solid rgb(215, 215, 215);
+        border-radius: 50%;
+        animation: cssload-shadow 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
+        transform: translateX(-50%);
+      }
+
+      @keyframes cssload-square {
+        50% {
+          border-radius: 100%;
+          transform: scale(0.5) rotate(-45deg);
+        }
+        100% {
+          transform: scale(1) rotate(-45deg);
+        }
+      }
+
+      @keyframes cssload-heart {
+        50% {
+          transform: rotate(360deg);
+        }
+        100% {
+          transform: rotate(720deg);
+        }
+      }
+
+      @keyframes cssload-heartL {
+        60% {
+          transform: scale(0.4) translate(-28px, -27px);
+        }
+      }
+
+      @keyframes cssload-heartR {
+        40% {
+          transform: scale(0.4) translate(28px, -27px);
+        }
+      }
+
+      @keyframes cssload-shadow {
+        50% {
+          transform: translateX(-50%) scale(0.5);
+          border-color: rgb(228, 228, 228);
+        }
+      }
+      
+      /* Game Styles */
+      .game-container {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #222;
+      }
+      
+      svg {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        touch-action: none;
+      }
+      
+      .instruction {
+        color: white;
+        font-family: sans-serif;
+        opacity: 0.6;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        padding: 10px 20px;
+        background: rgba(0,0,0,0.5);
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 100;
+        pointer-events: none;
+      }
+      
+      @media (max-width: 768px) {
+        .instruction {
+          font-size: 12px;
+          padding: 8px 15px;
+          bottom: 10px;
+        }
+      }
+      
+      .score {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        color: white;
+        font-family: sans-serif;
+        font-size: 18px;
+        background: rgba(0,0,0,0.5);
+        padding: 10px 20px;
+        border-radius: 8px;
+        z-index: 100;
+        pointer-events: none;
+      }
+      
+      @media (max-width: 768px) {
+        .score {
+          top: 10px;
+          right: 10px;
+          font-size: 14px;
+          padding: 8px 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Question Container -->
+    <div class="question-container container">
+      <div class="tenor-gif-embed" data-postid="25789758" data-share-method="host" data-width="100%">
+        <a href="https://tenor.com/view/tkthao219-bubududu-gif-25789758">Tkthao219 Bubududu Sticker</a>
+        from <a href="https://tenor.com/search/tkthao219-stickers">Tkthao219 Stickers</a>
+      </div>
+      <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+
+      <h2 class="question">Cinta Ga Sama Aku?</h2>
+      <div class="button-container">
+        <button class="yes-btn btn js-yes-btn">Cinta Banget</button>
+        <button class="no-btn btn js-no-btn">Najis</button>
+      </div>
+    </div>
+
+    <!-- Result Container -->
+    <div class="result-container container">
+      <video class="gif-result" src="cute love gif.mp4" autoplay loop muted></video>
+      <h2>Udah Pasti!</h2>
+      <button class="play-game-btn">Play Panah Cinta 💘</button>
+    </div>
+
+    <!-- Heart Loader -->
+    <div class="cssload-main">
+      <div class="cssload-heart">
+        <span class="cssload-heartL"></span>
+        <span class="cssload-heartR"></span>
+        <span class="cssload-square"></span>
+      </div>
+      <div class="cssload-shadow"></div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container">
+      <div class="score">Score: <span id="scoreValue">0</span></div>
+      <div class="instruction">Tarik panahnya dimana aja trus lepasin</div>
+      
+      <svg id="game" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" overflow="visible">
+        <linearGradient id="ArcGradient">
+          <stop offset="0" stop-color="#fff" stop-opacity=".2"/>
+          <stop offset="50%" stop-color="#fff" stop-opacity="0"/>
+        </linearGradient>
+        <path id="arc" fill="none" stroke="url(#ArcGradient)" stroke-width="4" d="M100,250c250-400,550-400,800,0" pointer-events="none"/>
+        <defs>
+          <g id="arrow">
+            <line x2="60" fill="none" stroke="#888" stroke-width="2"/>
+            <polygon fill="#888" points="64 0 58 2 56 0 58 -2"/>
+            <polygon fill="#ff69b4" points="2 -3 -4 -3 -1 0 -4 3 2 3 5 0"/>
+          </g>
+        </defs>
+        <g id="target">
+          <path fill="#FFF" d="M924.2,274.2c-21.5,21.5-45.9,19.9-52,3.2c-4.4-12.1,2.4-29.2,14.2-41c11.8-11.8,29-18.6,41-14.2 C944.1,228.3,945.7,252.8,924.2,274.2z"/>
+          <path fill="#ff69b4" d="M915.8,265.8c-14.1,14.1-30.8,14.6-36,4.1c-4.1-8.3,0.5-21.3,9.7-30.5s22.2-13.8,30.5-9.7 C930.4,235,929.9,251.7,915.8,265.8z"/>
+          <path fill="#FFF" d="M908.9,258.9c-8,8-17.9,9.2-21.6,3.5c-3.2-4.9-0.5-13.4,5.6-19.5c6.1-6.1,14.6-8.8,19.5-5.6 C918.1,241,916.9,250.9,908.9,258.9z"/>
+          <path fill="#ff1493" d="M903.2,253.2c-2.9,2.9-6.7,3.6-8.3,1.7c-1.5-1.8-0.6-5.4,2-8c2.6-2.6,6.2-3.6,8-2 C906.8,246.5,906.1,250.2,903.2,253.2z"/>
+        </g>
+        <g id="bow" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke" pointer-events="none">
+          <polyline fill="none" stroke="#ff69b4" stroke-linecap="round" points="88,200 88,250 88,300"/>
+          <path fill="none" stroke="#ff1493" stroke-width="3" stroke-linecap="round" d="M88,300 c0-10.1,12-25.1,12-50s-12-39.9-12-50"/>
+        </g>
+        <g class="arrow-angle"><use x="100" y="250" xlink:href="#arrow"/></g>
+        <clipPath id="mask">
+          <polygon opacity=".5" points="0,0 1500,0 1500,200 970,290 950,240 925,220 875,280 890,295 920,310 0,350" pointer-events="none"/>
+        </clipPath>
+        <g class="arrows" clip-path="url(#mask)" pointer-events="none"></g>
+        
+        <g class="missyou" fill="#aaa" opacity="0" transform="translate(-50, 50)">
+          <path d="M358 194L363 118 386 120 400 153 416 121 440 119 446 203 419 212 416 163 401 180 380 160 381 204"/>
+          <path d="M450 120L458 200 475 192 474 121"/>
+          <path d="M537 118L487 118 485 160 515 162 509 177 482 171 482 193 529 199 538 148 501 146 508 133 537 137"/>
+          <path d="M540 202L543 178 570 186 569 168 544 167 546 122 590 116 586 142 561 140 560 152 586 153 586 205"/>
+          <path d="M630 120 L650 160 L670 120 L690 120 L660 170 L660 200 L640 200 L640 170 L610 120 Z"/>
+          <path d="M700 160 A20 20 0 1 1 699.9 160"/>
+          <path d="M730 140 L730 180 A20 20 0 0 0 770 180 L770 140 L750 140 L750 180 A5 5 0 0 1 750 180 L750 140 Z"/>
+          <path d="M790 150 L790 180 L810 180 L810 100 Z M790 200 L810 200 L810 220 L790 220 Z"/>
+        </g>
+
+        <g class="loveyou" fill="#ff69b4" opacity="0" transform="translate(300, 100)">
+          <path d="M0 0 L0 80 L30 80 L30 70 L10 70 L10 0 Z"/>
+          <path d="M50 40 A20 20 0 1 1 49.9 40"/>
+          <path d="M80 0 L100 80 L120 0 L110 0 L100 60 L90 0 Z"/>
+          <path d="M140 0 L140 80 L170 80 L170 70 L150 70 L150 50 L170 50 L170 40 L150 40 L150 10 L170 10 L170 0 Z"/>
+          <path d="M190 0 L205 30 L220 0 L230 0 L210 40 L210 80 L200 80 L200 40 L180 0 Z"/>
+          <path d="M250 40 A20 20 0 1 1 249.9 40"/>
+          <path d="M280 0 L280 50 A20 20 0 0 0 320 50 L320 0 L310 0 L310 50 A10 10 0 0 1 290 50 L290 0 Z"/>
+        </g>
+        
+        <g class="hit" fill="#ffcc00" opacity="0" transform="translate(180, -80) rotate(12)">
+          <path d="M383 114L385 195 407 191 406 160 422 155 418 191 436 189 444 112 423 119 422 141 407 146 400 113"/>
+          <path d="M449 185L453 113 477 112 464 186"/>
+          <path d="M486 113L484 130 506 130 481 188 506 187 520 131 540 135 545 119"/>
+          <path d="M526,195l5-20l22,5l-9,16L526,195z M558,164l32-44l-35-9l-19,51L558,164z"/>
+        </g>
+      </svg>
+    </div>
+
+    <script>
+      // Question Page Logic
+      const questionContainer = document.querySelector(".question-container");
+      const resultContainer = document.querySelector(".result-container");
+      const gifResult = document.querySelector(".gif-result");
+      const heartLoader = document.querySelector(".cssload-main");
+      const yesBtn = document.querySelector(".js-yes-btn");
+      const noBtn = document.querySelector(".js-no-btn");
+      const playGameBtn = document.querySelector(".play-game-btn");
+      const gameContainer = document.querySelector(".game-container");
+
+      // No button move on hover
+      noBtn.addEventListener("mouseover", () => {
+        const newX = Math.floor(Math.random() * questionContainer.offsetWidth);
+        const newY = Math.floor(Math.random() * questionContainer.offsetWidth);
+        noBtn.style.left = `${newX}px`;
+        noBtn.style.top = `${newY}px`;
+      });
+
+      // Yes button functionality
+      yesBtn.addEventListener("click", () => {
+        questionContainer.style.display = "none";
+        heartLoader.style.display = "block";
+
+        setTimeout(() => {
+          heartLoader.style.display = "none";
+          resultContainer.style.display = "block";
+          if (gifResult) gifResult.play();
+        }, 3000);
+      });
+
+      // Play game button
+      playGameBtn.addEventListener("click", () => {
+        resultContainer.style.display = "none";
+        gameContainer.style.display = "block";
+        document.body.style.background = "#222";
+        initGame();
+      });
+
+      // Arrow Game Logic
+      let gameInitialized = false;
+      
+      function initGame() {
+        if (gameInitialized) return;
+        gameInitialized = true;
+
+        var svg = document.querySelector("svg");
+        var cursor = svg.createSVGPoint();
+        var arrows = document.querySelector(".arrows");
+        var randomAngle = 0;
+        var score = 0;
+        var isDragging = false;
+        var dragStartPoint = null;
+
+        let target = { x: 900, y: 249.5 };
+        let lineSegment = {
+          x1: 875, y1: 280, x2: 925, y2: 220
+        };
+        let pivot = { x: 100, y: 250 };
+        
+        aim({ clientX: 320, clientY: 300 });
+        
+        window.addEventListener("mousedown", startDraw);
+        window.addEventListener("touchstart", handleTouchStart, { passive: false });
+        
+        function handleTouchStart(e) {
+          e.preventDefault();
+          var touch = e.touches[0];
+          startDraw(touch);
+        }
+        
+        function startDraw(e) {
+          if (isDragging) return;
+          isDragging = true;
+          dragStartPoint = getMouseSVG(e);
+          randomAngle = Math.random() * Math.PI * 0.03 - 0.015;
+          TweenMax.to(".arrow-angle use", 0.3, { opacity: 1 });
+          
+          window.addEventListener("mousemove", aim);
+          window.addEventListener("touchmove", handleTouchMove, { passive: false });
+          window.addEventListener("mouseup", loose);
+          window.addEventListener("touchend", loose);
+          
+          aim(e);
+        }
+
+        function handleTouchMove(e) {
+          e.preventDefault();
+          var touch = e.touches[0];
+          aim(touch);
+        }
+
+        function aim(e) {
+          if (!dragStartPoint) return;
+          
+          var point = getMouseSVG(e);
+          var dx = (point.x - dragStartPoint.x) * 0.4;
+          var dy = (point.y - dragStartPoint.y) * 0.1;
+          var angle = Math.atan2(dy, dx);
+          var bowAngle = angle - Math.PI;
+          
+          while (bowAngle > Math.PI) bowAngle -= 2 * Math.PI;
+          while (bowAngle < -Math.PI) bowAngle += 2 * Math.PI;
+          
+          var maxBowAngle = Math.PI / 2;
+          var minBowAngle = -Math.PI / 2;
+          
+          if (bowAngle > maxBowAngle) {
+            bowAngle = maxBowAngle;
+          } else if (bowAngle < minBowAngle) {
+            bowAngle = minBowAngle;
+          }
+          
+          var distance = Math.min(Math.sqrt(dx * dx + dy * dy), 80);
+          var scale = Math.min(Math.max(distance / 30, 1), 2.5);
+          
+          TweenMax.to("#bow", 0.3, {
+            scaleX: scale,
+            rotation: bowAngle + "rad",
+            transformOrigin: "right center"
+          });
+          
+          TweenMax.to(".arrow-angle", 0.3, {
+            rotation: bowAngle + "rad",
+            svgOrigin: "100 250"
+          });
+          
+          TweenMax.to(".arrow-angle use", 0.3, {
+            x: -distance
+          });
+          
+          TweenMax.to("#bow polyline", 0.3, {
+            attr: {
+              points: "88,200 " + Math.min(pivot.x - (1 / scale) * distance, 88) + ",250 88,300"
+            }
+          });
+          
+          var radius = distance * 9;
+          var offset = {
+            x: Math.cos(bowAngle) * radius,
+            y: Math.sin(bowAngle) * radius
+          };
+          var arcWidth = offset.x * 3;
+          
+          TweenMax.to("#arc", 0.3, {
+            attr: {
+              d: "M100,250c" + offset.x + "," + offset.y + "," + (arcWidth - offset.x) + "," + (offset.y + 50) + "," + arcWidth + ",50"
+            },
+            autoAlpha: distance / 60
+          });
+        }
+
+        function loose() {
+          if (!isDragging) return;
+          isDragging = false;
+          dragStartPoint = null;
+          
+          window.removeEventListener("mousemove", aim);
+          window.removeEventListener("touchmove", handleTouchMove);
+          window.removeEventListener("mouseup", loose);
+          window.removeEventListener("touchend", loose);
+
+          TweenMax.to("#bow", 0.4, {
+            scaleX: 1,
+            transformOrigin: "right center",
+            ease: Elastic.easeOut
+          });
+          
+          TweenMax.to("#bow polyline", 0.4, {
+            attr: {
+              points: "88,200 88,250 88,300"
+            },
+            ease: Elastic.easeOut
+          });
+          
+          var newArrow = document.createElementNS("http://www.w3.org/2000/svg", "use");
+          newArrow.setAttributeNS("http://www.w3.org/1999/xlink", "href", "#arrow");
+          arrows.appendChild(newArrow);
+
+          var path = MorphSVGPlugin.pathDataToBezier("#arc");
+          TweenMax.to([newArrow], 0.5, {
+            force3D: true,
+            bezier: {
+              type: "cubic",
+              values: path,
+              autoRotate: ["x", "y", "rotation"]
+            },
+            onUpdate: hitTest,
+            onUpdateParams: ["{self}"],
+            onComplete: onMiss,
+            ease: Linear.easeNone
+          });
+          
+          TweenMax.to("#arc", 0.3, {
+            opacity: 0
+          });
+          
+          TweenMax.set(".arrow-angle use", {
+            opacity: 0
+          });
+        }
+
+        function hitTest(tween) {
+          var arrow = tween.target[0];
+          var transform = arrow._gsTransform;
+          var radians = (transform.rotation * Math.PI) / 180;
+          var arrowSegment = {
+            x1: transform.x,
+            y1: transform.y,
+            x2: Math.cos(radians) * 60 + transform.x,
+            y2: Math.sin(radians) * 60 + transform.y
+          };
+
+          var intersection = getIntersection(arrowSegment, lineSegment);
+          if (intersection.segment1 && intersection.segment2) {
+            tween.pause();
+            var dx = intersection.x - target.x;
+            var dy = intersection.y - target.y;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+            var selector = ".hit";
+            var points = 10;
+            
+            if (distance < 7) {
+              selector = ".loveyou";
+              points = 100;
+            }
+            
+            updateScore(points);
+            showMessage(selector);
+          }
+        }
+
+        function onMiss() {
+          showMessage(".missyou");
+        }
+        
+        function updateScore(points) {
+          score += points;
+          document.getElementById("scoreValue").textContent = score;
+        }
+
+        function showMessage(selector) {
+          TweenMax.killTweensOf(selector);
+          TweenMax.killChildTweensOf(selector);
+          TweenMax.set(selector, {
+            autoAlpha: 1
+          });
+          TweenMax.staggerFromTo(
+            selector + " path",
+            0.5,
+            {
+              rotation: -5,
+              scale: 0,
+              transformOrigin: "center"
+            },
+            {
+              scale: 1,
+              ease: Back.easeOut
+            },
+            0.05
+          );
+          TweenMax.staggerTo(
+            selector + " path",
+            0.3,
+            {
+              delay: 2,
+              rotation: 20,
+              scale: 0,
+              ease: Back.easeIn
+            },
+            0.03
+          );
+        }
+
+        function getMouseSVG(e) {
+          cursor.x = e.clientX || (e.touches && e.touches[0].clientX);
+          cursor.y = e.clientY || (e.touches && e.touches[0].clientY);
+          return cursor.matrixTransform(svg.getScreenCTM().inverse());
+        }
+
+        function getIntersection(segment1, segment2) {
+          var dx1 = segment1.x2 - segment1.x1;
+          var dy1 = segment1.y2 - segment1.y1;
+          var dx2 = segment2.x2 - segment2.x1;
+          var dy2 = segment2.y2 - segment2.y1;
+          var cx = segment1.x1 - segment2.x1;
+          var cy = segment1.y1 - segment2.y1;
+          var denominator = dy2 * dx1 - dx2 * dy1;
+          if (denominator == 0) {
+            return null;
+          }
+          var ua = (dx2 * cy - dy2 * cx) / denominator;
+          var ub = (dx1 * cy - dy1 * cx) / denominator;
+          return {
+            x: segment1.x1 + ua * dx1,
+            y: segment1.y1 + ua * dy1,
+            segment1: ua >= 0 && ua <= 1,
+            segment2: ub >= 0 && ub <= 1
+          };
+        }
+      }
+    </script>
+  </body>
+</html>
